@@ -66,9 +66,9 @@ function CleaningModal({ tasks, person, onClose }) {
   const toggle = (i) => setChecked(prev => ({ ...prev, [i]: !prev[i] }))
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 flex items-end sm:items-center justify-center p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4" onClick={onClose}>
       <div
-        className="bg-white dark:bg-zinc-900 rounded-2xl w-full max-w-sm shadow-xl overflow-hidden"
+        className="bg-white dark:bg-zinc-900 rounded-2xl w-full max-w-lg shadow-xl overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
@@ -124,7 +124,7 @@ function CleaningModal({ tasks, person, onClose }) {
             <p className="text-sm font-medium text-gray-800 dark:text-zinc-200 mb-1">{cl.tasksTitle}</p>
             <p className="text-xs text-gray-400 dark:text-zinc-500 mb-4">{cl.tasksHint}</p>
 
-            <ul className="space-y-2 mb-5 max-h-60 overflow-y-auto">
+            <ul className="space-y-2 mb-5 max-h-80 overflow-y-auto">
               {tasks.map((task, i) => (
                 <li
                   key={i}
