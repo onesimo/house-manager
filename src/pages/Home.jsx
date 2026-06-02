@@ -183,7 +183,6 @@ function CleaningWidget() {
           ? Object.entries(data)
               .map(([id, val]) => ({ id, ...val }))
               .sort((a, b) => b.completedAt - a.completedAt)
-              .slice(0, 5)
           : []
       )
     })
@@ -197,7 +196,12 @@ function CleaningWidget() {
   const person = config.people[personIdx]
   const color = AVATAR_COLORS[personIdx % AVATAR_COLORS.length]
   const cl = t.home.cleaningLog
-  const cleaned = isCleanedThisWeek(logs, person)
+
+  const monday = toMonday(new Date())
+  const mondayISO = monday.toISOString().split('T')[0]
+  const sundayISO = new Date(monday.getTime() + 6 * 86400000).toISOString().split('T')[0]
+  const currentWeekLog = logs.find(l => l.person === person && l.date >= mondayISO && l.date <= sundayISO)
+  const cleaned = !!currentWeekLog
 
   return (
     <section className="mb-6">
@@ -218,23 +222,34 @@ function CleaningWidget() {
           </div>
           <p className="font-semibold text-gray-900 dark:text-zinc-100">{person}</p>
         </div>
-        <button
-          onClick={() => !cleaned && setShowModal(true)}
-          className={`shrink-0 text-xs font-semibold px-3 py-2 rounded-lg transition-colors ${
-            cleaned
-              ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 cursor-default'
-              : 'bg-indigo-600 text-white hover:bg-indigo-500 active:bg-indigo-700'
-          }`}
-        >
-          {cleaned ? cl.done : cl.button}
-        </button>
+        {cleaned ? (
+          <div className="flex items-center gap-1.5 shrink-0">
+            <span className="bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 text-xs font-semibold px-3 py-2 rounded-lg">
+              {cl.done}
+            </span>
+            <button
+              onClick={() => remove(ref(db, `cleaningLog/${currentWeekLog.id}`))}
+              title="Desfazer"
+              className="text-gray-300 hover:text-red-500 dark:text-zinc-600 dark:hover:text-red-400 transition-colors text-xl leading-none p-1"
+            >
+              ×
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setShowModal(true)}
+            className="shrink-0 bg-indigo-600 text-white text-xs font-semibold px-3 py-2 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 transition-colors"
+          >
+            {cl.button}
+          </button>
+        )}
       </div>
 
       {logs.length > 0 && (
         <div className="mt-3">
           <p className="text-xs font-semibold text-gray-400 dark:text-zinc-500 uppercase tracking-wide mb-2">{cl.logTitle}</p>
           <ul className="space-y-1.5">
-            {logs.map(log => (
+            {logs.slice(0, 5).map(log => (
               <li key={log.id} className="flex items-center justify-between bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl px-4 py-2.5">
                 <div className="flex items-center gap-2">
                   <span className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 text-xs font-bold flex items-center justify-center shrink-0">
