@@ -83,7 +83,13 @@ export default function Rules() {
           {rules.map((rule, i) => (
             <li key={rule.id} className="flex items-center gap-3 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl px-4 min-h-[52px]">
               <span className="text-gray-400 dark:text-zinc-600 text-sm w-6 shrink-0 text-center">{i + 1}.</span>
-              <span className="flex-1 text-base text-gray-800 dark:text-zinc-200 py-3">{t.rules.items?.[i] ?? rule.text}</span>
+              <span className="flex-1 text-base text-gray-800 dark:text-zinc-200 py-3">
+                {(() => {
+                  const item = t.rules.items?.[i]
+                  if (item && typeof item === 'object') return <><strong className="font-semibold">{item.bold}</strong> {item.text}</>
+                  return item ?? rule.text
+                })()}
+              </span>
               {isAdmin && (
                 <button
                   onClick={() => remove(ref(db, `rules/${rule.id}`))}

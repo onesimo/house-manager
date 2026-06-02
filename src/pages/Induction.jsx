@@ -11,7 +11,7 @@ function getSaved() {
 
 function buildSteps(rules, notices) {
   return [
-    ...rules.map((r, i) => ({ type: 'rule', text: r.text, index: i, total: rules.length })),
+    ...rules.map((r, i) => ({ type: 'rule', text: r.text, bold: r.bold, index: i, total: rules.length })),
     ...notices.map((n, i) => ({ type: 'notice', ...n, index: i, total: notices.length })),
     { type: 'shower' },
     { type: 'complete' },
@@ -78,7 +78,11 @@ export default function Induction() {
   }
 
   const notices = t.induction.notices
-  const translatedRules = rules.map((r, i) => ({ ...r, text: t.rules.items?.[i] ?? r.text }))
+  const translatedRules = rules.map((r, i) => {
+    const item = t.rules.items?.[i]
+    if (item && typeof item === 'object') return { ...r, bold: item.bold, text: item.text }
+    return { ...r, text: typeof item === 'string' ? item : r.text }
+  })
   const steps = buildSteps(translatedRules, notices)
   const clampedStep = Math.min(step, steps.length - 1)
   const current = steps[clampedStep]
@@ -139,7 +143,9 @@ export default function Induction() {
         <Badge label={label} />
 
         <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-2xl px-5 py-5 mb-6 min-h-[140px]">
-          <p className="text-gray-900 dark:text-zinc-100 text-base leading-relaxed">{current.text}</p>
+          <p className="text-gray-900 dark:text-zinc-100 text-base leading-relaxed">
+            {current.bold ? <><strong className="font-semibold">{current.bold}</strong> {current.text}</> : current.text}
+          </p>
           {current.sub && (
             <ul className="mt-3 space-y-2">
               {current.sub.map((s, i) => (
