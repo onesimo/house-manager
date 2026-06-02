@@ -192,9 +192,13 @@ function CleaningWidget() {
   if (!config) return null
 
   const weekOffset = getWeekOffset(config.startDate)
-  const personIdx = weekOffset % config.people.length
-  const person = config.people[personIdx]
+  const { people } = config
+  const personIdx = weekOffset % people.length
+  const person = people[personIdx]
   const color = AVATAR_COLORS[personIdx % AVATAR_COLORS.length]
+  const nextPersonIdx = (personIdx + 1) % people.length
+  const nextPerson = people[nextPersonIdx]
+  const nextColor = AVATAR_COLORS[nextPersonIdx % AVATAR_COLORS.length]
   const cl = t.home.cleaningLog
 
   const monday = toMonday(new Date())
@@ -244,6 +248,16 @@ function CleaningWidget() {
           </button>
         )}
       </div>
+
+      {cleaned && (
+        <div className="mt-2 flex items-center gap-3 rounded-xl px-4 py-3 border border-dashed border-gray-200 dark:border-zinc-700">
+          <p className="text-xs text-gray-400 dark:text-zinc-500 shrink-0">{cl.nextUp}:</p>
+          <div className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${nextColor}`}>
+            {nextPerson[0].toUpperCase()}
+          </div>
+          <p className="text-sm font-medium text-gray-700 dark:text-zinc-300">{nextPerson}</p>
+        </div>
+      )}
 
       {logs.length > 0 && (
         <div className="mt-3">

@@ -43,6 +43,7 @@ export const translations = {
         saving: 'Salvando...',
         logTitle: '📋 Histórico de limpeza',
         done: 'Concluído ✓',
+        nextUp: 'Próxima semana',
       },
     },
     lists: {
@@ -214,6 +215,7 @@ export const translations = {
         saving: 'Saving...',
         logTitle: '📋 Cleaning history',
         done: 'Done ✓',
+        nextUp: 'Next week',
       },
     },
     lists: {
