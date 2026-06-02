@@ -89,7 +89,7 @@ export default function Bins() {
         <h2 className="text-lg font-semibold text-gray-900 dark:text-zinc-100 mb-3">{t.bins.pdfTitle}</h2>
         <div className="border border-gray-200 dark:border-zinc-800 rounded-xl overflow-hidden">
           <iframe
-            src="/panda-calendar.pdf"
+            src={`${import.meta.env.BASE_URL}panda-calendar.pdf`}
             title="Panda waste collection calendar 2025/2026"
             className="w-full"
             style={{ height: '70vh', minHeight: '400px' }}
