@@ -42,6 +42,7 @@ export const translations = {
         finalize: 'Finalizar',
         saving: 'Salvando...',
         logTitle: '📋 Histórico de limpeza',
+        done: 'Concluído ✓',
       },
     },
     lists: {
@@ -212,6 +213,7 @@ export const translations = {
         finalize: 'Finalise',
         saving: 'Saving...',
         logTitle: '📋 Cleaning history',
+        done: 'Done ✓',
       },
     },
     lists: {

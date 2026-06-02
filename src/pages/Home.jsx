@@ -24,6 +24,15 @@ function getWeekOffset(startDate) {
   return Math.max(0, Math.round((currentMonday - startMonday) / (7 * 24 * 60 * 60 * 1000)))
 }
 
+function isCleanedThisWeek(logs, person) {
+  const monday = toMonday(new Date())
+  const sunday = new Date(monday)
+  sunday.setDate(monday.getDate() + 6)
+  const mondayISO = monday.toISOString().split('T')[0]
+  const sundayISO = sunday.toISOString().split('T')[0]
+  return logs.some(log => log.person === person && log.date >= mondayISO && log.date <= sundayISO)
+}
+
 function formatLogDate(iso, lang) {
   return new Date(iso + 'T12:00:00').toLocaleDateString(
     lang === 'pt' ? 'pt-BR' : 'en-IE',
@@ -188,6 +197,7 @@ function CleaningWidget() {
   const person = config.people[personIdx]
   const color = AVATAR_COLORS[personIdx % AVATAR_COLORS.length]
   const cl = t.home.cleaningLog
+  const cleaned = isCleanedThisWeek(logs, person)
 
   return (
     <section className="mb-6">
@@ -209,10 +219,14 @@ function CleaningWidget() {
           <p className="font-semibold text-gray-900 dark:text-zinc-100">{person}</p>
         </div>
         <button
-          onClick={() => setShowModal(true)}
-          className="shrink-0 bg-indigo-600 text-white text-xs font-semibold px-3 py-2 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 transition-colors"
+          onClick={() => !cleaned && setShowModal(true)}
+          className={`shrink-0 text-xs font-semibold px-3 py-2 rounded-lg transition-colors ${
+            cleaned
+              ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 cursor-default'
+              : 'bg-indigo-600 text-white hover:bg-indigo-500 active:bg-indigo-700'
+          }`}
         >
-          {cl.button}
+          {cleaned ? cl.done : cl.button}
         </button>
       </div>
 
