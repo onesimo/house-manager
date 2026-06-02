@@ -74,10 +74,12 @@ export default function Schedule() {
 
   const saveEdit = () => {
     const monday = toMonday(new Date(draft.startDate + 'T12:00:00'))
+    const pad = (n) => String(n).padStart(2, '0')
+    const localDate = `${monday.getFullYear()}-${pad(monday.getMonth() + 1)}-${pad(monday.getDate())}`
     const cleaned = {
       people: draft.people.map((p) => p.trim()).filter(Boolean),
       tasks: draft.tasks.map((t) => t.trim()).filter(Boolean),
-      startDate: monday.toISOString().split('T')[0],
+      startDate: localDate,
     }
     set(ref(db, 'schedule'), cleaned)
     setEditing(false)
