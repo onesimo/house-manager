@@ -24,42 +24,225 @@ function getWeekOffset(startDate) {
   return Math.max(0, Math.round((currentMonday - startMonday) / (7 * 24 * 60 * 60 * 1000)))
 }
 
+function formatLogDate(iso, lang) {
+  return new Date(iso + 'T12:00:00').toLocaleDateString(
+    lang === 'pt' ? 'pt-BR' : 'en-IE',
+    { weekday: 'short', day: 'numeric', month: 'short' }
+  )
+}
+
+// ── Cleaning Modal ────────────────────────────────────────────────────────────
+function CleaningModal({ tasks, person, onClose }) {
+  const { t, lang } = useLanguage()
+  const cl = t.home.cleaningLog
+  const today = new Date().toISOString().split('T')[0]
+
+  const [step, setStep] = useState('date')
+  const [date, setDate] = useState(today)
+  const [showPicker, setShowPicker] = useState(false)
+  const [checked, setChecked] = useState(() =>
+    Object.fromEntries(tasks.map((_, i) => [i, false]))
+  )
+  const [saving, setSaving] = useState(false)
+
+  const allChecked = tasks.every((_, i) => checked[i])
+
+  const finalize = async () => {
+    setSaving(true)
+    await push(ref(db, 'cleaningLog'), { person, date, completedAt: Date.now() })
+    setSaving(false)
+    onClose()
+  }
+
+  const toggle = (i) => setChecked(prev => ({ ...prev, [i]: !prev[i] }))
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/60 flex items-end sm:items-center justify-center p-4" onClick={onClose}>
+      <div
+        className="bg-white dark:bg-zinc-900 rounded-2xl w-full max-w-sm shadow-xl overflow-hidden"
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-zinc-800">
+          <h2 className="text-base font-semibold text-gray-900 dark:text-zinc-100">{cl.modalTitle}</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:text-zinc-500 dark:hover:text-zinc-300 text-2xl leading-none">×</button>
+        </div>
+
+        {/* Step: date */}
+        {step === 'date' && (
+          <div className="px-5 py-5 space-y-3">
+            <p className="text-sm text-gray-600 dark:text-zinc-400 mb-4">{cl.whenQuestion}</p>
+
+            {!showPicker ? (
+              <>
+                <button
+                  onClick={() => { setDate(today); setStep('tasks') }}
+                  className="w-full bg-indigo-600 text-white py-3.5 rounded-xl font-semibold hover:bg-indigo-500 transition-colors"
+                >
+                  {cl.todayBtn} — {new Date().toLocaleDateString(lang === 'pt' ? 'pt-BR' : 'en-IE', { weekday: 'long', day: 'numeric', month: 'long' })}
+                </button>
+                <button
+                  onClick={() => setShowPicker(true)}
+                  className="w-full border border-gray-200 dark:border-zinc-700 text-gray-500 dark:text-zinc-400 py-3 rounded-xl text-sm hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors"
+                >
+                  {cl.otherDate}
+                </button>
+              </>
+            ) : (
+              <div className="space-y-3">
+                <input
+                  type="date"
+                  value={date}
+                  max={today}
+                  onChange={e => setDate(e.target.value)}
+                  className="w-full bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-xl px-4 py-3 text-base text-gray-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+                <button
+                  onClick={() => setStep('tasks')}
+                  disabled={!date}
+                  className="w-full bg-indigo-600 text-white py-3.5 rounded-xl font-semibold hover:bg-indigo-500 disabled:opacity-40 transition-colors"
+                >
+                  {cl.next}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Step: tasks */}
+        {step === 'tasks' && (
+          <div className="px-5 py-5">
+            <p className="text-sm font-medium text-gray-800 dark:text-zinc-200 mb-1">{cl.tasksTitle}</p>
+            <p className="text-xs text-gray-400 dark:text-zinc-500 mb-4">{cl.tasksHint}</p>
+
+            <ul className="space-y-2 mb-5 max-h-60 overflow-y-auto">
+              {tasks.map((task, i) => (
+                <li
+                  key={i}
+                  onClick={() => toggle(i)}
+                  className={`flex items-center gap-3 rounded-xl px-4 py-3 cursor-pointer border transition-colors ${
+                    checked[i]
+                      ? 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800/50'
+                      : 'bg-white border-gray-200 dark:bg-zinc-800 dark:border-zinc-700'
+                  }`}
+                >
+                  <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
+                    checked[i] ? 'bg-green-500 border-green-500' : 'border-gray-300 dark:border-zinc-600'
+                  }`}>
+                    {checked[i] && (
+                      <svg viewBox="0 0 12 10" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3">
+                        <polyline points="1 5 4 8 11 1" />
+                      </svg>
+                    )}
+                  </span>
+                  <span className={`text-sm ${checked[i] ? 'line-through text-gray-400 dark:text-zinc-500' : 'text-gray-800 dark:text-zinc-200'}`}>
+                    {task}
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            <button
+              onClick={finalize}
+              disabled={!allChecked || saving}
+              className="w-full bg-indigo-600 text-white py-3.5 rounded-xl font-semibold hover:bg-indigo-500 disabled:opacity-40 transition-colors"
+            >
+              {saving ? cl.saving : cl.finalize}
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ── Cleaning Widget ───────────────────────────────────────────────────────────
 function CleaningWidget() {
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
   const [config, setConfig] = useState(null)
+  const [logs, setLogs] = useState([])
+  const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
-    return onValue(ref(db, 'schedule'), (snap) => {
-      const data = snap.val()
-      if (data) setConfig(data)
+    const unsubSchedule = onValue(ref(db, 'schedule'), snap => {
+      if (snap.val()) setConfig(snap.val())
     })
+    const unsubLog = onValue(ref(db, 'cleaningLog'), snap => {
+      const data = snap.val()
+      setLogs(
+        data
+          ? Object.entries(data)
+              .map(([id, val]) => ({ id, ...val }))
+              .sort((a, b) => b.completedAt - a.completedAt)
+              .slice(0, 5)
+          : []
+      )
+    })
+    return () => { unsubSchedule(); unsubLog() }
   }, [])
 
   if (!config) return null
 
   const weekOffset = getWeekOffset(config.startDate)
-  const { people } = config
-  const personIdx = weekOffset % people.length
-  const person = people[personIdx]
+  const personIdx = weekOffset % config.people.length
+  const person = config.people[personIdx]
   const color = AVATAR_COLORS[personIdx % AVATAR_COLORS.length]
+  const cl = t.home.cleaningLog
 
   return (
     <section className="mb-6">
+      {showModal && (
+        <CleaningModal
+          tasks={config.tasks || []}
+          person={person}
+          onClose={() => setShowModal(false)}
+        />
+      )}
+
       <h2 className="text-base font-semibold text-gray-500 dark:text-zinc-400 mb-3 uppercase tracking-wide">{t.home.cleaning}</h2>
-      <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl px-4 py-4 flex items-center gap-3">
-        <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0 ${color}`}>
-          {person[0].toUpperCase()}
+
+      <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl px-4 py-4 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0 ${color}`}>
+            {person[0].toUpperCase()}
+          </div>
+          <p className="font-semibold text-gray-900 dark:text-zinc-100">{person}</p>
         </div>
-        <p className="font-semibold text-gray-900 dark:text-zinc-100">{person}</p>
+        <button
+          onClick={() => setShowModal(true)}
+          className="shrink-0 bg-indigo-600 text-white text-xs font-semibold px-3 py-2 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 transition-colors"
+        >
+          {cl.button}
+        </button>
       </div>
+
+      {logs.length > 0 && (
+        <div className="mt-3">
+          <p className="text-xs font-semibold text-gray-400 dark:text-zinc-500 uppercase tracking-wide mb-2">{cl.logTitle}</p>
+          <ul className="space-y-1.5">
+            {logs.map(log => (
+              <li key={log.id} className="flex items-center justify-between bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl px-4 py-2.5">
+                <div className="flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 text-xs font-bold flex items-center justify-center shrink-0">
+                    {log.person[0].toUpperCase()}
+                  </span>
+                  <span className="text-sm font-medium text-gray-800 dark:text-zinc-200">{log.person}</span>
+                </div>
+                <span className="text-xs text-gray-400 dark:text-zinc-500">{formatLogDate(log.date, lang)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </section>
   )
 }
 
+// ── Bins Widget ───────────────────────────────────────────────────────────────
 const COLLECTION_START = '2025-12-15'
 const ROTATION = [
-  [{ binType: 'black' }, { binType: 'brown' }],
-  [{ binType: 'green' }],
+  [{ binType: 'black' }],
+  [{ binType: 'green' }, { binType: 'brown' }],
 ]
 
 const BIN_COLORS = {
@@ -132,6 +315,7 @@ function BinsWidget() {
   )
 }
 
+// ── Notes Wall ────────────────────────────────────────────────────────────────
 const NOTE_COLORS = [
   'bg-yellow-50 border-yellow-300 dark:bg-yellow-900/40 dark:border-yellow-700/50',
   'bg-blue-50 border-blue-300 dark:bg-indigo-900/40 dark:border-indigo-700/50',
@@ -213,6 +397,7 @@ function NotesWall() {
   )
 }
 
+// ── Page ──────────────────────────────────────────────────────────────────────
 export default function Home() {
   const { t } = useLanguage()
   return (
