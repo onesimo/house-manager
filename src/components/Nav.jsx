@@ -105,7 +105,7 @@ export default function Nav() {
               className="px-2 py-1 rounded-lg text-xs font-semibold text-gray-500 hover:text-gray-800 hover:bg-gray-100 dark:text-zinc-400 dark:hover:text-zinc-200 dark:hover:bg-zinc-800 transition-colors"
               aria-label="Toggle language"
             >
-              {lang === 'pt' ? 'EN' : 'PT'}
+              {lang === 'pt' ? 'EN' : '🇧🇷'}
             </button>
             <button
               onClick={toggleTheme}
@@ -129,7 +129,7 @@ export default function Nav() {
               className="px-2 py-1 rounded-lg text-xs font-semibold text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors"
               aria-label="Toggle language"
             >
-              {lang === 'pt' ? 'EN' : 'PT'}
+              {lang === 'pt' ? 'EN' : '🇧🇷'}
             </button>
             <button
               onClick={toggleTheme}
