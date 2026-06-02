@@ -395,7 +395,7 @@ function NotesWall() {
         />
         <button
           onClick={addNote}
-          className="bg-indigo-600 text-white px-5 py-3 rounded-xl text-base font-medium hover:bg-indigo-500 active:bg-indigo-700 transition-colors"
+          className="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-500 active:bg-indigo-700 transition-colors"
         >
           {t.common.post}
         </button>
