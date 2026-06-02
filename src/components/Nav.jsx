@@ -65,7 +65,7 @@ function MoonIcon() {
 function HouseLogo() {
   return (
     <div className="w-8 h-8 rounded-lg overflow-hidden shrink-0 border border-gray-300 dark:border-zinc-700">
-      <img src="/public.jpg" alt="" className="w-full h-full object-cover" onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='flex' }} />
+      <img src={`${import.meta.env.BASE_URL}public.jpg`} alt="" className="w-full h-full object-cover" onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='flex' }} />
       <div style={{display:'none'}} className="w-full h-full bg-indigo-100 dark:bg-indigo-900 items-center justify-center text-base">🏠</div>
     </div>
   )
