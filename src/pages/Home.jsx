@@ -359,6 +359,7 @@ function NotesWall() {
   const { t } = useLanguage()
   const [notes, setNotes] = useState([])
   const [input, setInput] = useState('')
+  const [pendingDelete, setPendingDelete] = useState(null)
 
   useEffect(() => {
     return onValue(ref(db, 'notes'), (snap) => {
@@ -411,13 +412,30 @@ function NotesWall() {
                 <span className="text-gray-400 dark:text-zinc-600 text-xs">
                   {new Date(note.createdAt).toLocaleDateString('en-IE', { day: 'numeric', month: 'short' })}
                 </span>
-                <button
-                  onClick={() => remove(ref(db, `notes/${note.id}`))}
-                  className="text-gray-300 hover:text-red-500 dark:text-zinc-700 dark:hover:text-red-400 transition-colors text-lg leading-none p-1 -mr-1"
-                  aria-label="Remove note"
-                >
-                  ×
-                </button>
+                {pendingDelete === note.id ? (
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={() => { remove(ref(db, `notes/${note.id}`)); setPendingDelete(null) }}
+                      className="text-xs font-semibold text-red-500 hover:text-red-600 px-2 py-0.5 rounded-md bg-red-50 dark:bg-red-900/30 transition-colors"
+                    >
+                      Sim
+                    </button>
+                    <button
+                      onClick={() => setPendingDelete(null)}
+                      className="text-xs text-gray-400 hover:text-gray-600 dark:text-zinc-500 dark:hover:text-zinc-300 px-2 py-0.5 rounded-md transition-colors"
+                    >
+                      Não
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setPendingDelete(note.id)}
+                    className="text-gray-300 hover:text-red-500 dark:text-zinc-700 dark:hover:text-red-400 transition-colors text-lg leading-none p-1 -mr-1"
+                    aria-label="Remove note"
+                  >
+                    ×
+                  </button>
+                )}
               </div>
             </div>
           ))}
