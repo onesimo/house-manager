@@ -297,8 +297,8 @@ function getNextCollections(count = 2) {
   return results
 }
 
-function formatDate(iso) {
-  return new Date(iso + 'T12:00:00').toLocaleDateString('en-IE', { weekday: 'long', day: 'numeric', month: 'long' })
+function formatDate(iso, lang) {
+  return new Date(iso + 'T12:00:00').toLocaleDateString(lang === 'pt' ? 'pt-BR' : 'en-IE', { weekday: 'long', day: 'numeric', month: 'long' })
 }
 
 function daysUntil(iso, t, tr) {
@@ -312,7 +312,7 @@ function daysUntil(iso, t, tr) {
 }
 
 function BinsWidget() {
-  const { t, tr } = useLanguage()
+  const { t, tr, lang } = useLanguage()
   const collections = getNextCollections(2)
   return (
     <section className="mb-6">
@@ -335,7 +335,7 @@ function BinsWidget() {
               ))}
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-medium text-gray-800 dark:text-zinc-200 truncate">{formatDate(c.date)}</p>
+              <p className="text-sm font-medium text-gray-800 dark:text-zinc-200 truncate">{formatDate(c.date, lang)}</p>
               <p className="text-xs text-gray-500 dark:text-zinc-500 mt-0.5">{daysUntil(c.date, t, tr)}</p>
             </div>
           </li>
@@ -410,7 +410,7 @@ function NotesWall() {
               <p className="text-gray-800 dark:text-zinc-200 text-sm leading-relaxed">{note.text}</p>
               <div className="flex items-center justify-between mt-2">
                 <span className="text-gray-400 dark:text-zinc-600 text-xs">
-                  {new Date(note.createdAt).toLocaleDateString('en-IE', { day: 'numeric', month: 'short' })}
+                  {new Date(note.createdAt).toLocaleDateString(lang === 'pt' ? 'pt-BR' : 'en-IE', { day: 'numeric', month: 'short' })}
                 </span>
                 {pendingDelete === note.id ? (
                   <div className="flex items-center gap-1.5">
