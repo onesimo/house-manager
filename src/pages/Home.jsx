@@ -33,11 +33,13 @@ function isCleanedThisWeek(logs, person) {
   return logs.some(log => log.person === person && log.date >= mondayISO && log.date <= sundayISO)
 }
 
+function cap(str) { return str.charAt(0).toUpperCase() + str.slice(1) }
+
 function formatLogDate(iso, lang) {
-  return new Date(iso + 'T12:00:00').toLocaleDateString(
+  return cap(new Date(iso + 'T12:00:00').toLocaleDateString(
     lang === 'pt' ? 'pt-BR' : 'en-IE',
     { weekday: 'short', day: 'numeric', month: 'short' }
-  )
+  ))
 }
 
 // ── Cleaning Modal ────────────────────────────────────────────────────────────
@@ -88,7 +90,7 @@ function CleaningModal({ tasks, person, onClose }) {
                   onClick={() => { setDate(today); setStep('tasks') }}
                   className="w-full bg-indigo-600 text-white py-3.5 rounded-xl font-semibold hover:bg-indigo-500 transition-colors"
                 >
-                  {cl.todayBtn} — {new Date().toLocaleDateString(lang === 'pt' ? 'pt-BR' : 'en-IE', { weekday: 'long', day: 'numeric', month: 'long' })}
+                  {cl.todayBtn} — {cap(new Date().toLocaleDateString(lang === 'pt' ? 'pt-BR' : 'en-IE', { weekday: 'long', day: 'numeric', month: 'long' }))}
                 </button>
                 <button
                   onClick={() => setShowPicker(true)}
@@ -298,7 +300,7 @@ function getNextCollections(count = 2) {
 }
 
 function formatDate(iso, lang) {
-  return new Date(iso + 'T12:00:00').toLocaleDateString(lang === 'pt' ? 'pt-BR' : 'en-IE', { weekday: 'long', day: 'numeric', month: 'long' })
+  return cap(new Date(iso + 'T12:00:00').toLocaleDateString(lang === 'pt' ? 'pt-BR' : 'en-IE', { weekday: 'long', day: 'numeric', month: 'long' }))
 }
 
 function daysUntil(iso, t, tr) {
