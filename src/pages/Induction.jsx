@@ -142,7 +142,7 @@ export default function Induction() {
         <ProgressBar current={clampedStep + 1} total={progressTotal} t={t} tr={tr} />
         <Badge label={label} />
 
-        <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-2xl px-5 py-5 mb-6 min-h-[140px]">
+        <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-2xl px-5 py-5 mb-6">
           <p className="text-gray-900 dark:text-zinc-100 text-base leading-relaxed">
             {current.bold ? <><strong className="font-semibold">{current.bold}</strong> {current.text}</> : current.text}
           </p>
@@ -155,6 +155,26 @@ export default function Induction() {
                 </li>
               ))}
             </ul>
+          )}
+          {current.videos && (
+            <div className="mt-4 space-y-3">
+              {current.videos.map((group, i) => (
+                <div key={i}>
+                  <p className="text-xs font-medium text-gray-500 dark:text-zinc-400 mb-1">{group.label}</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {group.srcs.map((src, k) => (
+                      <video
+                        key={k}
+                        src={`${import.meta.env.BASE_URL}${src}`}
+                        controls
+                        playsInline
+                        className="w-full rounded-lg border border-gray-200 dark:border-zinc-700 bg-black"
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
 

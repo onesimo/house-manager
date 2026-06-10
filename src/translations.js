@@ -132,7 +132,13 @@ export const translations = {
         { text: 'Apague as luzes ao sair de um cômodo.' },
         { text: 'Não coloque comida diretamente no lixo — coloque sempre dentro de um saco.' },
         { text: 'Separe o lixo corretamente; se tiver dúvidas, pergunte.' },
-        { text: 'Não bata as portas!' },
+        {
+          text: 'Não bata as portas!',
+          videos: [
+            { label: '✅ O que fazer', srcs: ['videos/okay_1.mp4', 'videos/okay_2.mp4'] },
+            { label: '❌ O que não fazer', srcs: ['videos/not_okay_1.mp4', 'videos/not_okay_2.mp4'] },
+          ],
+        },
         { text: 'Não hesite em perguntar se tiver alguma dúvida.' },
       ],
     },
@@ -165,7 +171,13 @@ export const translations = {
         { text: 'Apague as luzes ao sair de um cômodo.' },
         { text: 'Não coloque comida diretamente no lixo — coloque sempre dentro de um saco.' },
         { text: 'Separe o lixo corretamente; se tiver dúvidas, pergunte.' },
-        { text: 'Não bata as portas!' },
+        {
+          text: 'Não bata as portas!',
+          videos: [
+            { label: '✅ O que fazer', srcs: ['videos/okay_1.mp4', 'videos/okay_2.mp4'] },
+            { label: '❌ O que não fazer', srcs: ['videos/not_okay_1.mp4', 'videos/not_okay_2.mp4'] },
+          ],
+        },
         { text: 'Não hesite em perguntar se tiver alguma dúvida.' },
       ],
     },
@@ -304,7 +316,13 @@ export const translations = {
         { text: 'Turn off the lights when leaving a room.' },
         { text: 'Do not put food directly into the trash — always place it inside a bag.' },
         { text: "Separate the waste correctly; if you're unsure, please ask." },
-        { text: 'Do not slam doors!' },
+        {
+          text: 'Do not slam doors!',
+          videos: [
+            { label: '✅ What to do', srcs: ['videos/okay_1.mp4', 'videos/okay_2.mp4'] },
+            { label: '❌ What not to do', srcs: ['videos/not_okay_1.mp4', 'videos/not_okay_2.mp4'] },
+          ],
+        },
         { text: 'Do not hesitate to ask if you have any questions.' },
       ],
     },
@@ -337,7 +355,13 @@ export const translations = {
         { text: 'Turn off the lights when leaving a room.' },
         { text: 'Do not put food directly into the trash — always place it inside a bag.' },
         { text: "Separate the waste correctly; if you're unsure, please ask." },
-        { text: 'Do not slam doors!' },
+        {
+          text: 'Do not slam doors!',
+          videos: [
+            { label: '✅ What to do', srcs: ['videos/okay_1.mp4', 'videos/okay_2.mp4'] },
+            { label: '❌ What not to do', srcs: ['videos/not_okay_1.mp4', 'videos/not_okay_2.mp4'] },
+          ],
+        },
         { text: 'Do not hesitate to ask if you have any questions.' },
       ],
     },

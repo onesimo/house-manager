@@ -53,6 +53,26 @@ export default function Instructions() {
                   ))}
                 </ul>
               )}
+              {notice.videos && (
+                <div className="mt-3 ml-7 space-y-3">
+                  {notice.videos.map((group, j) => (
+                    <div key={j}>
+                      <p className="text-xs font-medium text-gray-500 dark:text-zinc-400 mb-1">{group.label}</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        {group.srcs.map((src, k) => (
+                          <video
+                            key={k}
+                            src={`${import.meta.env.BASE_URL}${src}`}
+                            controls
+                            playsInline
+                            className="w-full rounded-lg border border-gray-200 dark:border-zinc-700 bg-black"
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </li>
           ))}
         </ul>
