@@ -33,9 +33,9 @@ function isCleanedThisWeek(logs, person) {
   return logs.some(log => log.person === person && log.date >= mondayISO && log.date <= sundayISO)
 }
 
-function formatLogDate(iso, lang) {
+function formatLogDate(iso) {
   return new Date(iso + 'T12:00:00').toLocaleDateString(
-    lang === 'pt' ? 'pt-BR' : 'en-IE',
+    'en-IE',
     { weekday: 'short', day: 'numeric', month: 'short' }
   )
 }
@@ -88,7 +88,7 @@ function CleaningModal({ tasks, person, onClose }) {
                   onClick={() => { setDate(today); setStep('tasks') }}
                   className="w-full bg-indigo-600 text-white py-3.5 rounded-xl font-semibold hover:bg-indigo-500 transition-colors"
                 >
-                  {cl.todayBtn} — {new Date().toLocaleDateString(lang === 'pt' ? 'pt-BR' : 'en-IE', { weekday: 'long', day: 'numeric', month: 'long' })}
+                  {cl.todayBtn} — {new Date().toLocaleDateString('en-IE', { weekday: 'long', day: 'numeric', month: 'long' })}
                 </button>
                 <button
                   onClick={() => setShowPicker(true)}
@@ -258,7 +258,7 @@ function CleaningWidget() {
                   </span>
                   <span className="text-sm font-medium text-gray-800 dark:text-zinc-200">{log.person}</span>
                 </div>
-                <span className="text-xs text-gray-400 dark:text-zinc-500">{formatLogDate(log.date, lang)}</span>
+                <span className="text-xs text-gray-400 dark:text-zinc-500">{formatLogDate(log.date)}</span>
               </li>
             ))}
           </ul>
